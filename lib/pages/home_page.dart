@@ -69,7 +69,7 @@ class _HomPageState extends State<HomPage> {
             ),
             ListTile(
               onTap: () {
-                nextScreen(context, ProfilePage());
+                nextScreenReplacement(context, ProfilePage());
               },
               selectedColor: Theme.of(context).primaryColor,
               leading: const Icon(Icons.account_box_sharp),
