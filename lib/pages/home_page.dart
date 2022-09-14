@@ -1,8 +1,10 @@
 import 'package:chatapp/helper/helper_function.dart';
 import 'package:chatapp/pages/auth/login_page.dart';
 import 'package:chatapp/pages/profile_page.dart';
+import 'package:chatapp/pages/search_page.dart';
 import 'package:chatapp/service/auth_service.dart';
 import 'package:chatapp/service/database_service.dart';
+import 'package:chatapp/widgets/groupcard.dart';
 import 'package:chatapp/widgets/texfield_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +29,14 @@ class _HomPageState extends State<HomPage> {
   void initState() {
     getUserData();
     super.initState();
+  }
+
+  String getGroupId(String res) {
+    return res.substring(0, res.indexOf('_'));
+  }
+
+  String getUserName(String res) {
+    return res.substring(res.indexOf('_') + 1);
   }
 
   getUserData() async {
@@ -148,11 +158,17 @@ class _HomPageState extends State<HomPage> {
           backgroundColor: Theme.of(context).primaryColor,
           centerTitle: true,
           elevation: 0,
-          actions: const [
-            Icon(
-              Icons.search,
-              color: Colors.white,
-              size: 27,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 0),
+              child: IconButton(
+                onPressed: () => nextScreen(context, SearchPage()),
+                icon: const Icon(
+                  Icons.search,
+                  size: 27,
+                  color: Colors.white,
+                ),
+              ),
             )
           ],
           title: const Text("We Chat",
@@ -249,7 +265,14 @@ class _HomPageState extends State<HomPage> {
               return ListView.builder(
                   itemCount: snapshot.data["groups"].length,
                   itemBuilder: (context, index) {
-                    return const Text("Hello");
+                    int reverseIndex =
+                        snapshot.data['groups'].length - index - 1;
+                    return GroupCard(
+                        groupId:
+                            getGroupId(snapshot.data["groups"][reverseIndex]),
+                        groupName:
+                            getUserName(snapshot.data["groups"][reverseIndex]),
+                        userName: name.toString());
                   });
             } else {
               return missingGroupWidget();
